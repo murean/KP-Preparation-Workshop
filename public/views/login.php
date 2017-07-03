@@ -1,30 +1,15 @@
-<div class="container">
-    <style media="screen">
-        #form-container {
-            max-width: 350px;
-            margin: auto;
-            padding-top:15%;
-        }
-        #form-container form {
-            border: 1px solid #3498db;
-            border-top-width: 5px;
-            padding: 15px;
-        }
+<?php echo $head_content ?>
 
-        input[type="text"], input[type="password"] {
-            border: none;
-            border-radius: 0;
-            border-bottom: 1px solid #3498db;
-        }
-    </style>
-    <div class="row" id="form-container">
-        <div class="column" id="form-column">
-            <form action="">
-                <label><i class="fa fa-envelope"></i>&nbsp;Email</label>
-                <input type="text" placeholder="email">
-                <label><i class="fa fa-key"></i>&nbsp;Password</label><input type="password" placeholder="password">
-                <button type="submit"><i class="fa fa-unlock"></i>&nbsp;Login</button>
-            </form>
-        </div>
-    </div>
+<?php if (isset($failure_warning_content)) { echo $failure_warning_content; } ?>
+
+<div id="main">
+    <form action="#" method="post" class="container container--small container--middle">
+        <br>
+        <input type="text" placeholder="email"><br>
+        <input type="password" placeholder="password"><br>
+        <button type="submit" class="button--blue button--wide">&emsp;<i class="fa fa-unlock"></i> Login&emsp;</button>
+        <button type="reset" class="button--red button--wide"><i class="fa fa-arrow-left"></i> Kembali</button>
+    </form>
 </div>
+
+<?php echo $foot_content ?>

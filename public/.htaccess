@@ -3,6 +3,9 @@
     #Turn On
     # Options +FollowSymLinks
     RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
 
     # Redirect Assets
     # RewriteCond %{REQUEST_FILENAME} !-d
@@ -10,16 +13,18 @@
     # RewriteRule ^(js|css)/(.*)$ /$1/$2 [L]
 
     # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
+    # RewriteCond %{REQUEST_FILENAME} !-d
+    # RewriteRule ^(.*)/$ /$1 [L,R=301]
+
     # View...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ index.php?views=$1 [L,QSA]
+    # RewriteCond %{REQUEST_FILENAME} !-d
+    # RewriteCond %{REQUEST_FILENAME} !-f
+    # RewriteRule ^(.*)$ index.php?view=$1 [L,QSA]
+
     # Process
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(prc/*)$ index.php?process=$1 [L,QSA]
+    # RewriteCond %{REQUEST_FILENAME} !-d
+    # RewriteCond %{REQUEST_FILENAME} !-f
+    # RewriteRule ^(prc/*)$ index.php?process=$1 [L,QSA]
 
 
 </IfModule>
