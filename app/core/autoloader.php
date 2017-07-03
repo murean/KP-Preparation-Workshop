@@ -1,17 +1,28 @@
 <?php
 
-
-
-class Autoloader {
-    static public function loader($class_name)
+class Autoloader
+{
+    static public function ControllerLoader($class_name)
     {
-        $file_name = __DIR__. '/../controllers/' . str_replace("\\", '/', strtolower($class_name)) . '.php';
-        if( file_exists($file_name) ) {
-            include($file_name);
-            if (class_exists($class_name)) {
-                return true;
-            }
+        // change namespace format into directory format
+        $filename = str_replace("\\", '/', $class_name) . '.php';
+        $file = $_SERVER['DOCUMENT_ROOT'] . '/../app/controllers/' . $filename;
+        if (!file_exists($file))
+        {
+            return false;
         }
-        return false;
+        include $file;
+    }
+
+    public static function CoreLoader($class_name)
+    {
+        // change namespace format into directory format
+        $filename = str_replace("\\", '/', $class_name) . '.php';
+        $file = $_SERVER['DOCUMENT_ROOT'] . '/../app/core/' . strtolower($filename);
+        if (!file_exists($file))
+        {
+            return false;
+        }
+        include $file;
     }
 }

@@ -12,4 +12,9 @@ class Session
             header('Location: /login');
         }
     }
+
+    public static function GetSessionData()
+    {
+        return (object) $_SESSION['user'];
+    }
 }
