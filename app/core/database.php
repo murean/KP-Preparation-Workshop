@@ -3,7 +3,8 @@
 class Database
 {
 
-    private $driver = 'mysql',
+    private
+        $driver = 'mysql',
         $host = 'localhost',
         $db = 'kppw',
         $username = 'root',
@@ -49,10 +50,38 @@ class Database
      */
     public static function TransactionQuery(string $query, array $parameters): bool
     {
+        $pdo = new self();
         try {
-            $pdo = new self();
             $pdo->beginTransaction();
             $pdo->prepare($query)->execute($parameters);
+            $pdo->commit();
+            return true;
+        } catch (\PDOException $e) {
+            $pdo->rollback();
+            Log::write($e);
+            return false;
+        }
+    }
+
+    /**
+     * Multi Queries in A Transaction
+     * @param array $query_couple
+     * @return boolean
+     */
+    public static function MultiQueryTransaction(array $query_couple): bool
+    {
+        $pdo = new self();
+        try {
+            $pdo->beginTransaction();
+
+            foreach ($query_couple as $couple) {
+                // use last insert id from previous statement
+                if (isset($couple['use_last_insert_id'])) {
+                    $couple['parameters'][$couple['use_last_insert_id_to']] = $pdo->lastInsertId();
+                }
+                $pdo->prepare($couple['query'])
+                    ->execute($couple['parameters']);
+            }
             $pdo->commit();
             return true;
         } catch (\PDOException $e) {
@@ -68,7 +97,7 @@ class Database
      * @param array  $parameters [description]
      * @param string $fetch_mode [description]
      */
-    public static function SelectQuery(string $query, array $parameters, string $fetch_mode = 'assoc')
+    public static function SelectQuery(string $query, array $parameters = [], string $fetch_mode = 'assoc')
     {
         $available_mode = [
             'num' => PDO::FETCH_NUM,
