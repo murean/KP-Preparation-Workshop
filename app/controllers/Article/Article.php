@@ -2,27 +2,17 @@
 
 namespace Article;
 
-use Flight;
-use Session;
+use Controller;
 use Database;
 
-class Article
+class Article extends Controller
 {
-
-    private $db, $request, $session;
-
-    public function __construct()
-    {
-        $this->db = new Database();
-        $this->request = Flight::request();
-        $this->session = Session::GetSessionData();
-    }
 
     /**
      * Writer Create Article
      * @return void
      */
-    public function createArticle()
+    public function create()
     {
         $query = 'INSERT INTO article (`title`, `content`, `creator`,
             `created_at`) VALUES (:title, :content, :creator, NOW())';
@@ -42,7 +32,7 @@ class Article
      * Update An Article
      * @return [type] [description]
      */
-    public function updateArticle()
+    public function update()
     {
         $query = 'UPDATE article SET title = :title,
             content = :content, updated_at = NOW()
@@ -64,7 +54,7 @@ class Article
      * Writer Delete An Article
      * @return void
      */
-    public function deleteArticle()
+    public function delete()
     {
         $query = 'UPDATE `article` SET deleted_at = NOW()
             WHERE id = :id';
@@ -82,7 +72,7 @@ class Article
      * @param string $keyword
      * @return mixed
      */
-    public function getArticles(int $offset = 1, string $keyword = null)
+    public function getList(int $offset = 1, string $keyword = null)
     {
         $parameters = [];
 
@@ -90,7 +80,7 @@ class Article
             . ' a.updated_at,'
             . ' w.name'
             . ' FROM article AS a'
-            . ' LEFT JOIN writer AS w ON w.id = a.creator';
+            . ' LEFT JOIN user AS u ON u.id = a.creator';
 
         if ($keyword) {
             $query .= ' WHERE MATCH(`a`.`title`) AGAINST (:keyword)';
@@ -102,7 +92,7 @@ class Article
         return Database::SelectQuery($query, $parameters);
     }
 
-    public function readArticle(int $id)
+    public function read(int $id)
     {
         // Update Hit
         $query_update_hit = 'UPDATE article SET hit = hit + 1 WHERE id = :id';
@@ -114,7 +104,7 @@ class Article
             . ' a.updated_at,'
             . ' w.name'
             . ' FROM article AS a'
-            . ' LEFT JOIN writer AS w ON w.id = a.creator';
+            . ' LEFT JOIN user AS u ON u.id = a.creator';
 
         return Database::SelectQuery($query, []);
     }
