@@ -67,7 +67,7 @@ class Article extends Controller
     }
 
     /**
-     *
+     * Get Article List
      * @param int $offset
      * @param string $keyword
      * @return mixed
@@ -92,6 +92,11 @@ class Article extends Controller
         return Database::SelectQuery($query, $parameters);
     }
 
+    /**
+     * Read an Article
+     * @param int $id
+     * @return type
+     */
     public function read(int $id)
     {
         // Update Hit

@@ -18,6 +18,8 @@ use User\User;
 class Manager extends User
 {
 
+    private $user_type = 1;
+
     public function __construct()
     {
         parent::__construct();
@@ -25,7 +27,7 @@ class Manager extends User
 
     public function create()
     {
-        parent::create();
+        parent::create($this->user_type);
     }
 
     public function update()

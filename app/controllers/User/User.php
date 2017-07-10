@@ -25,7 +25,11 @@ class User extends Controller
         parent::__construct();
     }
 
-    public function create()
+    /**
+     * Create an User
+     * @param int $type 1 = Manager; 2 = Writer;
+     */
+    public function create(int $type)
     {
         /*
          * 1.  get name, password, image_url, email, type FROM request
@@ -40,12 +44,13 @@ class User extends Controller
         $queries = [];
 
         $queries[0]['query'] = 'INSERT INTO user (name, password, email, type)'
-            . ' VALUES(:name, :password, :email)';
+            . ' VALUES(:name, :password, :email, :type)';
 
         $queries[0]['parameters'] = [
             'name' => $data->name,
             'password' => $encrypted_password,
             'email' => $data->email,
+            'type' => $type
         ];
 
         $queries[1]['query'] = 'INSERT INTO privilege (user_id, code, created_at)'
@@ -63,7 +68,11 @@ class User extends Controller
         // to upload image, use library
     }
 
-    public function update()
+    /**
+     *
+     * @return array contains: string query, array parameter
+     */
+    public function update(): array
     {
         $data = $this->request->data;
         // update into user

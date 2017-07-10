@@ -8,6 +8,8 @@
 
 namespace Writer;
 
+use Database;
+
 /**
  * Description of Statistic
  *
@@ -16,5 +18,17 @@ namespace Writer;
 class Statistic
 {
 
-    public function getTopWriters();
+    public function getTopWriters(): array
+    {
+        $query = 'SELECT SUM(hit) AS poin FROM article GROUP BY creator ORDER BY poin DESC' . SQLOffset(0);
+        $top_writer = Database::SelectQuery($query);
+
+        $query = 'SELECT name, email FROM user WHERE id IN (:top_writer)';
+        $parameters = [
+            'top_writer' => implode(',', $top_writer)
+        ];
+
+        return Database::SelectQuery($query, $parameters);
+    }
+
 }
