@@ -14,7 +14,7 @@
 class Controller
 {
 
-    protected $session, $request;
+    protected $session, $request, $db;
 
     public function __construct()
     {

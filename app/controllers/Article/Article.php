@@ -67,27 +67,26 @@ class Article extends Controller
     }
 
     /**
-     * Get Article List
+     * Get Article data limited to id, title, and summary
      * @param int $offset
      * @param string $keyword
      * @return mixed
      */
-    public function getList(int $offset = 1, string $keyword = null)
+    public static function getList(int $offset, string $keyword)
     {
         $parameters = [];
 
-        $query = 'SELECT a.id, a.title, a.content, a.creator, a.created_at, '
-            . ' a.updated_at,'
-            . ' w.name'
-            . ' FROM article AS a'
-            . ' LEFT JOIN user AS u ON u.id = a.creator';
+        $query = 'SELECT a.id, a.title, a.summary '
+            . ' FROM article AS a';
 
         if ($keyword) {
-            $query .= ' WHERE MATCH(`a`.`title`) AGAINST (:keyword)';
+            $query .= ' WHERE MATCH(`a`.`title`) AGAINST (:keyword) AND a.deleted_at IS NULL';
             $parameters['keyword'] = $keyword;
+        } else {
+            $query .= ' WHERE a.deleted_at IS NULL';
         }
 
-        $query .= ' LIMIT 15 OFFSET ' . (($offset - 1) * 15);
+        $query .= SQLOffset($offset);
 
         return Database::SelectQuery($query, $parameters);
     }
@@ -97,7 +96,7 @@ class Article extends Controller
      * @param int $id
      * @return type
      */
-    public function read(int $id)
+    public static function read(int $id)
     {
         // Update Hit
         $query_update_hit = 'UPDATE article SET hit = hit + 1 WHERE id = :id';
@@ -105,13 +104,17 @@ class Article extends Controller
 
         $result = Database::TransactionQuery($query_update_hit, $parameter_update_hit);
 
-        $query = 'SELECT a.id, a.title, a.content, a.creator, a.created_at, '
-            . ' a.updated_at,'
-            . ' w.name'
-            . ' FROM article AS a'
-            . ' LEFT JOIN user AS u ON u.id = a.creator';
+        if ($result) {
+            $query = 'SELECT a.id, a.title, a.content, a.creator, a.created_at, '
+                . ' a.updated_at, '
+                . ' u.name'
+                . ' FROM article AS a'
+                . ' LEFT JOIN user AS u ON u.id = a . creator'
+                . ' WHERE a.id = :id';
 
-        return Database::SelectQuery($query, []);
+            return Database::SelectQuery($query, ['id' => $id], false);
+        }
+        return false;
     }
 
 }
