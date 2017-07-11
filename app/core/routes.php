@@ -10,6 +10,9 @@ Flight::route('GET /login', ['View\LoginView', 'RenderLogin']);
 Flight::route('GET /login/retry', ['View\LoginView', 'RenderLoginFailure']);
 
 // Articles List
+Flight::route('GET /', function() {
+    Flight::redirect('/1/');
+});
 Flight::route('GET (/@offset:[0-9]+(/@keyword:[a-zA-Z]+))', ['View\ArticleView', 'RenderArticleList']);
 
 // Article Detail / Read

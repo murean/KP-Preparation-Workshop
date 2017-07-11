@@ -1,4 +1,5 @@
 <?php
+
 // autoload
 require_once 'autoloader.php';
 spl_autoload_register('Autoloader::ControllerLoader');
@@ -8,7 +9,7 @@ spl_autoload_register('Autoloader::CoreLoader');
 require VENDOR . '/flight/flight/Flight.php';
 require CORE . '/routes.php';
 require CORE . '/view.php';
-
+require CORE . '/helper.php';
 
 // turn on the routing system
 Flight::start();

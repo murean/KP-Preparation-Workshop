@@ -3,18 +3,6 @@
 class Database
 {
 
-    private
-        $driver = 'mysql',
-        $host = 'localhost',
-        $db = 'kppw',
-        $username = 'root',
-        $password = 'root';
-
-    public function __construct()
-    {
-        return $this->connect($this->driver, $this->host, $this->db, $this->username, $this->password);
-    }
-
     /**
      * Create PDO Instance
      * @param  string $driver   [description]
@@ -24,12 +12,13 @@ class Database
      * @param  string $password [description]
      * @return [type]           [description]
      */
-    protected function connect(string $driver, string $host, string $database, string $username, string $password)
+    public function connect()
     {
         try {
-            if (in_array($driver, PDO::getAvailableDrivers(), TRUE)) {
-                return new PDO($driver . ':host=' . $host . ';dbname=' . $database
-                    . ';charset=utf8', $username, $password, [
+            $set = setting('db');
+            if (in_array($set['driver'], PDO::getAvailableDrivers(), TRUE)) {
+                return new PDO($set['driver'] . ':host=' . $set['host'] . ';dbname=' . $set['database']
+                    . ';charset=utf8', $set['username'], $set['password'], [
                     // does not need legacy system support
                     PDO::ATTR_EMULATE_PREPARES => false,
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -50,7 +39,7 @@ class Database
      */
     public static function TransactionQuery(string $query, array $parameters): bool
     {
-        $pdo = new self();
+        $pdo = (new self())->connect();
         try {
             $pdo->beginTransaction();
             $pdo->prepare($query)->execute($parameters);
@@ -70,7 +59,7 @@ class Database
      */
     public static function MultiQueryTransaction(array $query_couple): bool
     {
-        $pdo = new self();
+        $pdo = (new self())->connect();
         try {
             $pdo->beginTransaction();
 
@@ -97,7 +86,7 @@ class Database
      * @param array  $parameters [description]
      * @param string $fetch_mode [description]
      */
-    public static function SelectQuery(string $query, array $parameters = [], string $fetch_mode = 'assoc')
+    public static function SelectQuery(string $query, array $parameters = [], bool $multiple = true, string $fetch_mode = 'assoc')
     {
         $available_mode = [
             'num' => PDO::FETCH_NUM,
@@ -105,11 +94,14 @@ class Database
             'obj' => PDO::FETCH_OBJ,
         ];
 
-        $pdo = new self();
+        $pdo = (new self())->connect();
+
         $st = $pdo->prepare($query);
         $st->execute($parameters);
 
-        return $st->fetch($available_mode[$fetch_mode]);
+        $mode = $available_mode[$fetch_mode];
+
+        return ($multiple) ? $st->fetchAll($mode) : $st->fetch($mode);
     }
 
 }
