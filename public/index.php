@@ -13,9 +13,6 @@ define('VENDOR', $_SERVER['DOCUMENT_ROOT'] . '/../vendor');
 // autoload
 include CORE . '/bootstrap.php';
 
-// helper
-include CORE . '/helper.php';
-
 // start session
 session_start();
 // require CORE . '/session.php';
