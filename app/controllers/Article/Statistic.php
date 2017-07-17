@@ -20,8 +20,8 @@ class Statistic extends Controller
      */
     public function getTotalHit()
     {
-        $query = 'SELECT SUM(hit) FROM article';
-        return Database::SelectQuery($query);
+        $query = 'SELECT SUM(hit) AS hit FROM article';
+        return Database::SelectQuery($query, [], false);
     }
 
     /**
@@ -35,10 +35,10 @@ class Statistic extends Controller
          * 1. get user id
          * 2. sum all hit from article that owned
          */
-        $user = ($user_id !== null) ? $user_id : $this->session->id;
-        $query = 'SELECT SUM(hit) FROM article WHERE creator = :creator';
+        $user = ($user_id !== null) ? $user_id : $this->session['id'];
+        $query = 'SELECT SUM(hit) AS hit FROM article WHERE creator = :creator';
         $parameters = ['creator' => $user];
-        return Database::SelectQuery($query, $parameters);
+        return Database::SelectQuery($query, $parameters, false);
     }
 
     /**
@@ -47,8 +47,8 @@ class Statistic extends Controller
      */
     public function getTotalArticle()
     {
-        $query = 'SELECT COUNT(id) FROM article';
-        return Database::SelectQuery($query);
+        $query = 'SELECT COUNT(id) AS count FROM article';
+        return Database::SelectQuery($query, [], false);
     }
 
     /**
@@ -62,10 +62,10 @@ class Statistic extends Controller
          * 1. get user id
          * 2. count all article where creator matches the user_id
          */
-        $user = ($user_id !== null) ? $user_id : $this->session->id;
-        $query = 'SELECT COUNT(id) FROM article WHERE creator = :creator';
+        $user = ($user_id !== null) ? $user_id : $this->session['id'];
+        $query = 'SELECT COUNT(id) AS count FROM article WHERE creator = :creator';
         $parameters = ['creator' => $user];
-        return Database::SelectQuery($query, $parameters);
+        return Database::SelectQuery($query, $parameters, false);
     }
 
     /**
@@ -74,7 +74,7 @@ class Statistic extends Controller
      */
     public function getTopArticle()
     {
-        $query = 'SELECT a.id, a.title, u.name, a.created_at, a.updated_at'
+        $query = 'SELECT a.id, a.title, u.name, a.created_at, a.updated_at, a.hit'
             . ' FROM article AS a'
             . ' LEFT JOIN user AS u ON u.id = a.creator'
             . ' ORDER BY hit DESC'
@@ -90,9 +90,9 @@ class Statistic extends Controller
      */
     public function getTopOwnedArticle(int $user_id = null)
     {
-        $user = ($user_id !== null) ? $user_id : $this->session->id;
+        $user = ($user_id !== null) ? $user_id : $this->session['id'];
 
-        $query = 'SELECT a.id, a.title, u.name, a.created_at, a.updated_at'
+        $query = 'SELECT a.id, a.title, a.created_at, a.updated_at, a.hit'
             . ' FROM article AS a'
             . ' LEFT JOIN user AS u ON u.id = a.creator'
             . ' WHERE a.creator = :creator'
@@ -105,15 +105,30 @@ class Statistic extends Controller
     }
 
     /**
+     *
+     * @return type
+     */
+    public function getLastArticle()
+    {
+        $query = 'SELECT a.id, a.title, u.name, a.created_at, a.updated_at, a.hit'
+            . ' FROM article AS a'
+            . ' LEFT JOIN user AS u ON u.id = a.creator'
+            . ' ORDER BY a.updated_at DESC, a.created_at DESC'
+            . ' LIMIT 5';
+
+        return Database::SelectQuery($query, []);
+    }
+
+    /**
      * Get Last 5 Article
      * @param int $user_id
      * @return type
      */
-    public function getLastArticle(int $user_id = null)
+    public function getLastOwnedArticle(int $user_id = null)
     {
-        $user = ($user_id !== null) ? $user_id : $this->session->id;
+        $user = ($user_id !== null) ? $user_id : $this->session['id'];
 
-        $query = 'SELECT a.id, a.title, u.name, a.created_at, a.updated_at'
+        $query = 'SELECT a.id, a.title, a.created_at, a.updated_at, a.hit'
             . ' FROM article AS a'
             . ' LEFT JOIN user AS u ON u.id = a.creator'
             . ' WHERE a.creator = :creator'

@@ -11,11 +11,14 @@
         <link rel="stylesheet" href="/owl-carousel/owl.theme.css">
         <link rel="stylesheet" href="/css/lightcase.css">
         <link rel="stylesheet" href="/css/font.css">
+        <link rel="stylesheet" href="/js/toastr/build/toastr.min.css">
         <!-- CUSTOM STYLE -->
         <link rel="stylesheet" href="/css/template-style.css">
         <!--        <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,400,600,900&subset=latin-ext" rel="stylesheet">-->
         <script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
         <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/js/toastr/build/toastr.min.js"></script>
+
     </head>
 
     <body class="size-1140">

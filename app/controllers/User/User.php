@@ -10,6 +10,7 @@ namespace User;
 
 use Controller;
 use Database;
+use Flight;
 use Session;
 
 /**
@@ -19,6 +20,9 @@ use Session;
  */
 class User extends Controller
 {
+
+    private $image_dir = 'img/user/original',
+        $thumbnail_dir = 'img/user/thumbnail';
 
     public function __construct()
     {
@@ -72,27 +76,37 @@ class User extends Controller
      *
      * @return array contains: string query, array parameter
      */
-    public function update(): array
+    public function update()
     {
         $data = $this->request->data;
-        // update into user
-        $query = 'UPDATE user SET name = :name, email = :email';
-        $parameters = [
-            'name' => $data->name,
-            'email' => $data->email
-        ];
+        $image = $this->request->files->image;
 
-        $result = Database::TransactionQuery($query, $parameters);
+        if ($image['size'] > 0) {
+            $destination['original'] = $this->image_dir;
+            $destination['thumbnail'] = $this->thumbnail_dir;
+            uploadImage($image, 'user-' . $data->id . '.jpg', $destination);
+        }
+
+        if ($data->old_password && $data->new_password) {
+            $result = $this->changePassword();
+            if (!$result) {
+                redirect('/error');
+            }
+        }
+        redirect('/user/account');
     }
 
+    /**
+     *
+     */
     public function changeProfilePicture()
     {
         /*
          * 1.  get uploaded file
          * 2.  get user id
          */
-        $profile_picture = $this->request->file->image;
-        $user_id = $this->session->id;
+        $profile_picture = $this->request->file->image['tmp_name'];
+        $user_id = $this->session['id'];
 
         $destination = $_SERVER['DOCUMENT_ROOT'] . '/img/user/profile-' . $user_id . '.jpg';
 
@@ -107,54 +121,76 @@ class User extends Controller
         $result = Database::TransactionQuery($query, $parameters);
     }
 
+    /**
+     * User Login
+     */
     public function login()
     {
         $data = $this->request->data;
+
         /*
          * 1.  select password from user where have same email as in the request
          * 2.  compare password hash with the one in the request
          */
-        $query = 'SELECT password FROM user WHERE email = :email';
+        $query = 'SELECT id, name, password, type FROM user WHERE email = :email';
         $parameters = ['email' => $data->email];
 
-        $result = Database::SelectQuery($query, $parameters);
+        $result = Database::SelectQuery($query, $parameters, false);
 
-        if (password_verify($data->password, $result['password'])) {
-            Session::create();
-            // redirect to dashboard
-        } else {
-            // redirect to login page again
+        // redirect to login page again if inputted password and hash dont match
+        if (!password_verify($data->password, $result['password'])) {
+            redirect('/login/retry');
         }
+
+        Session::create($result['id'], $result['name'], $result['type']);
+        // redirect to suitable dashboard
+        ($result['type'] === 1) ? redirect('/manager/dashboard') : redirect('/writer/dashboard');
     }
 
     public function logout()
     {
         session_destroy();
+
         // redirect to home page
+        Flight::redirect('/');
     }
 
-    public function changePassword()
+    private function changePassword($old_password, $new_password)
     {
         /*
          * 1.  get old password
          * 2.  match it with current hash
          * 3.  if matchs, create new hash based on new password
          */
-        $user_id = $this->session->id;
-        $query = 'SELECT password FROM user WHERE id = :id';
-        $parameters = ['id' => $user_id];
-        $old_hash = Database::SelectQuery($query, $parameters)['password'];
+        $user_id = $this->session['id'];
+        $query_get = 'SELECT password FROM user WHERE id = :id';
+        $parameters_get = ['id' => $user_id];
+        $old_hash = Database::SelectQuery($query_get, $parameters_get)['password'];
 
-        if (password_verify($this->request->data->old_password, $old_hash)) {
-            $new_hash = password_hash($this->request->data->new_password, PASSWORD_BCRYPT);
-            $query = 'UPDATE user SET password = :password';
-            $parameters = ['password' => $new_hash];
-            $result = Database::TransactionQuery($query, $parameters);
-
-            // if success redirect to another page
-        } else {
-            // back to password page
+        if (!password_verify($old_password, $old_hash)) {
+            return false;
         }
+
+        $new_hash = password_hash($new_password, PASSWORD_BCRYPT);
+        $query = 'UPDATE user SET password = :password';
+        $parameters = ['password' => $new_hash];
+        $result = Database::TransactionQuery($query, $parameters);
+
+        return $result;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return array|
+     */
+    public function getData(int $id = null)
+    {
+        $user_id = ($id) ?: $this->session['id'];
+        $query = 'SELECT name, email, id FROM user WHERE id = :id';
+        $parameters = ['id' => $user_id];
+
+        return Database::SelectQuery($query, $parameters, false);
     }
 
 }

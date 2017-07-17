@@ -26,7 +26,8 @@ class Database
             } else {
                 throw new PDOException('Server tidak mendukung PDO');
             }
-        } catch (PDOException $e) {
+        }
+        catch (PDOException $e) {
             return 'Pesan: ' . $e->getMessage();
         }
     }
@@ -35,17 +36,20 @@ class Database
      * Template For Writing Prepared Statement with PDO
      * @param  string $query      [description]
      * @param  array  $parameters [description]
-     * @return bool               [description]
+     * @return mixed|bool               [description]
      */
-    public static function TransactionQuery(string $query, array $parameters): bool
+    public static function TransactionQuery(string $query, array $parameters,
+        bool $last_insert = false)
     {
         $pdo = (new self())->connect();
         try {
             $pdo->beginTransaction();
             $pdo->prepare($query)->execute($parameters);
+            $last_insert_id = $pdo->lastInsertId();
             $pdo->commit();
-            return true;
-        } catch (\PDOException $e) {
+            return ($last_insert) ? $last_insert_id : true;
+        }
+        catch (\PDOException $e) {
             $pdo->rollback();
             Log::write($e);
             return false;
@@ -73,7 +77,8 @@ class Database
             }
             $pdo->commit();
             return true;
-        } catch (\PDOException $e) {
+        }
+        catch (\PDOException $e) {
             $pdo->rollback();
             Log::write($e);
             return false;
@@ -86,7 +91,8 @@ class Database
      * @param array  $parameters [description]
      * @param string $fetch_mode [description]
      */
-    public static function SelectQuery(string $query, array $parameters = [], bool $multiple = true, string $fetch_mode = 'assoc')
+    public static function SelectQuery(string $query, array $parameters = [],
+        bool $multiple = true, string $fetch_mode = 'assoc')
     {
         $available_mode = [
             'num' => PDO::FETCH_NUM,
@@ -102,6 +108,11 @@ class Database
         $mode = $available_mode[$fetch_mode];
 
         return ($multiple) ? $st->fetchAll($mode) : $st->fetch($mode);
+    }
+
+    public static function GetLastInsertID()
+    {
+
     }
 
 }

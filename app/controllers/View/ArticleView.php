@@ -15,7 +15,8 @@ class ArticleView
      * @param int    $offset  [description]
      * @param string $keyword [description]
      */
-    public static function RenderArticleList(int $offset = 1, string $keyword = null)
+    public static function RenderArticleList(int $offset = 1,
+        string $keyword = null)
     {
         $search_key = ($keyword) ?: '';
         $lists = Article::getList($offset, $search_key);

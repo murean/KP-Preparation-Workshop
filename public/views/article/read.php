@@ -9,13 +9,14 @@
             </h1>
         </div>
     </header>
-    <img src="/img/attachment/img-<?php echo $article['id'] ?>.jpg" alt="" class="full-img">
+    <img class="l-8 m-12 s-12 l-offset-2 section-small-padding" src="/img/attachment/original/img-<?php echo $article['id'] ?>.jpg" alt="">
     <div class="section-small-padding full-width background-white">
-        <div class="m-12 s-12 l-7">
+        <div class="m-12 s-12 l-8 l-offset-2">
             <?php echo $article['content'] ?>
         </div>
 
     </div>
 </main>
 
+<?php echo $foot_info ?>
 <?php echo $foot_content ?>
