@@ -1,0 +1,21 @@
+---
+2017-07-18 21:17:25
+[42000] 
+ [ SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UPDATdE article SET title = ?,
+            content = ?, updated_at = NOW()
+     ' at line 1 ] 
+ [/var/www/html/practice-project/KP-Preparation-Workshop/app/core/database.php:47] 
+#0 /var/www/html/practice-project/KP-Preparation-Workshop/app/core/database.php(47): PDO->prepare('UPDATdE article...')
+#1 /var/www/html/practice-project/KP-Preparation-Workshop/app/controllers/Article/Article.php(65): Database::TransactionQuery('UPDATdE article...', Array)
+#2 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/core/Dispatcher.php(196): Article\Article->update()
+#3 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/core/Dispatcher.php(142): flight\core\Dispatcher::invokeMethod(Array, Array)
+#4 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/Engine.php(322): flight\core\Dispatcher::execute(Array, Array)
+#5 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/core/Dispatcher.php(196): flight\Engine->_start()
+#6 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/core/Dispatcher.php(142): flight\core\Dispatcher::invokeMethod(Array, Array)
+#7 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/core/Dispatcher.php(48): flight\core\Dispatcher::execute(Array, Array)
+#8 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/Engine.php(65): flight\core\Dispatcher->run('start', Array)
+#9 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/core/Dispatcher.php(196): flight\Engine->__call('start', Array)
+#10 /var/www/html/practice-project/KP-Preparation-Workshop/vendor/flight/flight/Flight.php(77): flight\core\Dispatcher::invokeMethod(Array, Array)
+#11 /var/www/html/practice-project/KP-Preparation-Workshop/app/core/bootstrap.php(15): Flight::__callStatic('start', Array)
+#12 /var/www/html/practice-project/KP-Preparation-Workshop/public/index.php(15): include('/var/www/html/p...')
+#13 {main}

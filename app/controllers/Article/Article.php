@@ -4,6 +4,9 @@ namespace Article;
 
 use Controller;
 use Database;
+use Flight;
+use Parsedown;
+use Session;
 
 class Article extends Controller
 {
@@ -31,15 +34,24 @@ class Article extends Controller
 
         $result = Database::TransactionQuery($query, $parameters, true);
 
+        if (!$result) {
+            redirect('/writer/article/creator', 'Gagal Membuat Artikel', 'error');
+            exit();
+        }
+
         if ($result) {
             $basename = 'img-' . $result . '.jpg';
             $destination['original'] = $_SERVER['DOCUMENT_ROOT'] . $this->image_dir;
             $destination['thumbnail'] = $_SERVER['DOCUMENT_ROOT'] . $this->thumbnail_dir;
-            uploadImage($this->request->files->image, $basename, $destination);
+            $image_result = uploadImage($this->request->files->image, $basename, $destination);
+            if (!$image_result) {
+                redirect('/writer/article/creator', 'Gagal Mengunggah Gambar', 'error');
+                exit();
+            }
         }
 
         // return to creator view
-        redirect('/writer/article/creator/success');
+        redirect('/writer/article/creator', 'Berhasil Membuat Artikel', 'success');
     }
 
     /**
@@ -60,7 +72,10 @@ class Article extends Controller
         ];
 
         $result = Database::TransactionQuery($query, $parameters);
-
+        if (!$result) {
+            redirect('/writer/article/editor/' . $this->request->data->id, 'Gagal Mengedit Artikel', 'error');
+            exit();
+        }
         $image = $this->request->files->image;
 
         if ($image['size']) {
@@ -70,12 +85,13 @@ class Article extends Controller
             $result = uploadImage($image, $basename, $destination);
             if (!$result) {
                 // redirect to failed editor page
-                redirect('/writer/article/editor/' . $this->request->data->id . '/fail');
+                redirect('/writer/article/editor/' . $this->request->data->id, 'Gagal Mengunggah Gambar', 'error');
+                exit();
             }
         }
 
         // return to success view
-        redirect('/writer/article/editor/' . $this->request->data->id . '/success');
+        redirect('/writer/article/editor/' . $this->request->data->id, 'Berhasil Mengedit Artikel', 'success');
     }
 
     public static function getDataForUpdate(int $id)
@@ -102,44 +118,58 @@ class Article extends Controller
 
         $result = Database::TransactionQuery($query, $parameters);
 
-//        $message = ($result) ? 'Berhasil Menghapus Artikel' : 'Gagal Menghapus Artikel';
+        $message = ($result) ? 'Berhasil Menghapus Artikel' : 'Gagal Menghapus Artikel';
+        $message_type = ($result) ? 'success' : 'error';
         // redirect to previous page
         $referrer = $_GET['ref'];
 
-        redirect($referrer);
+        redirect($referrer, $message, $message_type);
     }
 
     /**
      * Get Article data limited to id, title, and summary
      * @param int $offset
-     * @param string $keyword
+     * @param bool $owned
      * @return mixed
      */
-    public static function getList(int $offset, string $keyword)
+    public static function getList(int $offset, $owned = false)
     {
+        $keyword = Flight::request()->query->title;
         $parameters = [];
 
         $query = 'SELECT a.id, a.title, a.summary, a.created_at, a.updated_at '
             . ' FROM article AS a';
-        $query_counter = 'SELECT COUNT(id) AS total FROM article';
+        $query_counter = 'SELECT COUNT(a.id) AS total FROM article AS a';
 
+        // search by title too
         if ($keyword) {
             // fulltext query snippet
-            $fulltext = ' WHERE MATCH(`a`.`title`) AGAINST (:keyword) AND a.deleted_at IS NULL';
+            $filter = ' WHERE MATCH(`a`.`title`) AGAINST (:keyword IN BOOLEAN MODE) AND a.deleted_at IS NULL';
             // normal query
-            $query .= $fulltext;
+            $query .= $filter;
             // counter query
-            $query_counter .= $fulltext;
+            $query_counter .= $filter;
             // same parameter for both
-            $parameters['keyword'] = $keyword;
+            $parameters['keyword'] = preg_replace('/(\w+)/', '$1*', $keyword); // add * after each words
         } else {
-            $query .= ' WHERE a.deleted_at IS NULL';
+            $filter = ' WHERE a.deleted_at IS NULL';
+            $query .= $filter;
+            $query_counter .= $filter;
         }
 
-        $query .= ' ORDER BY a.updated_at DESC, a.created_at DESC' . SQLOffset($offset);
+        if ($owned) {
+            $filter = ' AND a.creator = :id';
+            $query .= $filter;
+            $query_counter .= $filter;
+            $parameters['id'] = Session::GetSessionData()['id'];
+        }
+
+        $query .= ' ORDER BY a.updated_at DESC, a.created_at DESC' . snippetOffsetSQL($offset);
 
         $result['dataset'] = Database::SelectQuery($query, $parameters);
-        $result['offsets'] = paginationCounter(Database::SelectQuery($query_counter, $parameters, false)['total']);
+        $result['offsets'] = paginationCounter(
+            Database::SelectQuery($query_counter, $parameters, false)['total']
+        );
 
         return $result;
     }
@@ -158,22 +188,27 @@ class Article extends Controller
 
         $result = Database::TransactionQuery($query_update_hit, $parameter_update_hit);
 
-        if ($result) {
-            $query = 'SELECT a.id, a.title, a.content, a.creator, a.created_at, '
-                . ' a.updated_at, '
-                . ' u.name'
-                . ' FROM article AS a'
-                . ' LEFT JOIN user AS u ON u.id = a . creator'
-                . ' WHERE a.id = :id';
-
-            $data = Database::SelectQuery($query, ['id' => $id], false);
-
-            // parse markdown to HTML
-            $data['content'] = (new \Parsedown())->text($data['content']);
-
-            return $data;
+        if (!$result) {
+            return false;
         }
-        return false;
+
+        $query = 'SELECT a.id, a.title, a.content, a.creator, a.created_at, '
+            . ' a.updated_at, '
+            . ' u.name'
+            . ' FROM article AS a'
+            . ' LEFT JOIN user AS u ON u.id = a . creator'
+            . ' WHERE a.id = :id';
+
+        $data = Database::SelectQuery($query, ['id' => $id], false);
+
+        if (!$data) {
+            return false;
+        }
+
+        // parse markdown to HTML
+        $data['content'] = (new Parsedown())->text($data['content']);
+
+        return $data;
     }
 
 }

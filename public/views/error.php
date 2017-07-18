@@ -1,4 +1,4 @@
-<?php echo $head_content ?>
+<?php e($head_content) ?>
 
 
 <div class="section text-center">
@@ -6,4 +6,4 @@
 </div>
 
 
-<?php echo $foot_content ?>
+<?php e($foot_content) ?>

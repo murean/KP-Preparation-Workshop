@@ -1,4 +1,4 @@
-<?php echo $head_content ?>
+<?php e($head_content) ?>
 
 
 <main role="main">
@@ -43,4 +43,4 @@
     });
 </script>
 
-<?php echo $foot_content ?>
+<?php e($foot_content) ?>

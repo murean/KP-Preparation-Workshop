@@ -113,7 +113,7 @@ class Statistic extends Controller
         $query = 'SELECT a.id, a.title, u.name, a.created_at, a.updated_at, a.hit'
             . ' FROM article AS a'
             . ' LEFT JOIN user AS u ON u.id = a.creator'
-            . ' ORDER BY a.updated_at DESC, a.created_at DESC'
+            . ' ORDER BY a.created_at DESC, a.updated_at DESC'
             . ' LIMIT 5';
 
         return Database::SelectQuery($query, []);
@@ -132,7 +132,7 @@ class Statistic extends Controller
             . ' FROM article AS a'
             . ' LEFT JOIN user AS u ON u.id = a.creator'
             . ' WHERE a.creator = :creator'
-            . ' ORDER BY a.updated_at DESC, a.created_at DESC'
+            . ' ORDER BY a.created_at DESC, a.updated_at DESC'
             . ' LIMIT 5';
 
         $parameters = ['creator' => $user];

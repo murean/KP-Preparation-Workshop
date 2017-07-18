@@ -1,5 +1,5 @@
-<?php echo $head_content ?>
-<?php echo $banner_manager ?>
+<?php e($head_content) ?>
+<?php e($banner_manager) ?>
 
 <main role="main">
     <div class="section background-white l-8 l-offset-2 m-12 s-12">
@@ -18,7 +18,7 @@
 </main>
 
 
-<script> <?php echo getMessage() ?></script>
+<script> <?php e(toastrMessage()) ?></script>
 
 
-<?php echo $foot_content ?>
+<?php e($foot_content) ?>

@@ -15,13 +15,13 @@
                 <p class="nav-text"></p>
                 <ul class="right chevron">
                     <li><a href="/writer/dashboard">Dashboard</a></li>
-                    <li><a href="/writer/articles">Artikel</a></li>
+                    <li><a href="/writer/articles/1">Artikel</a></li>
                     <li><a href="/writer/account">Akun</a></li>
                     <li><a href="/prc/logout">Logout</a></li>
                     <li>
                         <img
                             style="width:50px;"
-                            src="/img/user/thumbnail/thumb-user-<?php echo Session::GetSessionData()['id'] ?>.jpg"
+                            src="/img/user/thumbnail/thumb-user-<?php e(Session::GetSessionData()['id']) ?>.jpg"
                             alt="">
                     </li>
                 </ul>

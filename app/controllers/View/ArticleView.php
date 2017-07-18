@@ -15,11 +15,9 @@ class ArticleView
      * @param int    $offset  [description]
      * @param string $keyword [description]
      */
-    public static function RenderArticleList(int $offset = 1,
-        string $keyword = null)
+    public static function RenderArticleList(int $offset = 1)
     {
-        $search_key = ($keyword) ?: '';
-        $lists = Article::getList($offset, $search_key);
+        $lists = Article::getList($offset);
 
         Flight::render('article/list', ['lists' => $lists]);
     }
@@ -28,6 +26,9 @@ class ArticleView
     {
         $article = Article::read($id);
 
+        if (!$article || empty($article)) {
+            redirect('/error/404');
+        }
         Flight::render('article/read', ['article' => $article]);
     }
 

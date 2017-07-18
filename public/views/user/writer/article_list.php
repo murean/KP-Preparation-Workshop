@@ -1,5 +1,5 @@
-<?php echo $head_content ?>
-<?php echo $banner_writer ?>
+<?php e($head_content) ?>
+<?php e($banner_writer) ?>
 
 <main role="main">
     <!--Search Form-->
@@ -22,25 +22,23 @@
             <tbody id="article-list">
                 <?php foreach ($articles['dataset'] as $article) { ?>
                     <tr class="text-dark-hover">
-                        <td><?php echo $article['id'] ?></td>
+                        <td><?php e($article['id']) ?></td>
                         <td>
-                            <?php echo $article['title'] ?>
+                            <?php e($article['title']) ?>
                             <br>
                             (
                             <?php
-                            $last_update = ($article['created_at'] <=> $article['updated_at'])
-                                    ? $article['created_at'] : $article['updated_at'];
-                            echo readableTime($last_update);
+                            e(readableTime(latestDates($article['created_at'], $article['updated_at'])));
                             ?>
                             )</td>
-                        <td><?php echo $article['summary'] ?></td>
+                        <td><?php e($article['summary']) ?></td>
                         <td>
                             <!--Edit Trigger-->
-                            <a class="button icon-pen
-                               text-dark-hover" href="/writer/article/editor/<?php echo $article['id'] ?>"></a>
+                            <a class="button icon-pen text-dark-hover"
+                               href="/writer/article/editor/<?php e($article['id']) ?>"></a>
                             <!--Delete Trigger-->
-                            <a class="button delete icon-trash_can
-                               text-dark-hover" href="/prc/article/delete/<?php echo $article['id'] ?>?ref=<?php echo $_SERVER['REQUEST_URI'] ?>"></a>
+                            <a class="button delete icon-trash_can text-dark-hover"
+                               href="/prc/article/delete/<?php e($article['id']) ?>?ref=<?php e($_SERVER['REQUEST_URI']) ?>"></a>
                         </td>
                     </tr>
                 <?php } ?>
@@ -52,8 +50,8 @@
         $search_query = (isset($_GET['title'])) ? '?title=' . $_GET['title'] : '';
         ?>
         <?php for ($i = 1; $i <= $articles['offsets']; $i++) { ?>
-            <a href="/writer/articles/<?php echo $i . $search_query ?>" class="button text-dark-hover">
-                <?php echo $i ?>
+            <a href="/writer/articles/<?php e($i . $search_query) ?>" class="button text-dark-hover">
+                <?php e($i) ?>
             </a>
         <?php } ?>
     </div>
@@ -65,6 +63,6 @@
 			return false;
 		}
 	});
-<?php echo getMessage() ?>
+<?php e(toastrMessage()) ?>
 </script>
-<?php echo $foot_content ?>
+<?php e($foot_content) ?>

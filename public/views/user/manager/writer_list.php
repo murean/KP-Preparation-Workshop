@@ -1,11 +1,11 @@
-<?php echo $head_content ?>
-<?php echo $banner_manager ?>
+<?php e($head_content) ?>
+<?php e($banner_manager) ?>
 
 <main role="main">
     <!--Search Form-->
     <div class="section-top-padding">
-        <form action="/writer/articles/1" class="customform" method="get">
-            <input type="text" placeholder="Pencarian" name="title">
+        <form action="/manager/writers/1" class="customform" method="get">
+            <input type="text" placeholder="Pencarian" name="name">
         </form>
     </div>
     <!--Article List-->
@@ -25,13 +25,13 @@
             <tbody id="writer-list">
                 <?php foreach ($writers['dataset'] as $writer) { ?>
                     <tr class="text-dark-hover">
-                        <td><?php echo $writer['name'] ?></td>
-                        <td><?php echo $writer['email'] ?></td>
-                        <td><?php echo readableTime($writer['created_at']) ?></td>
+                        <td><?php e($writer['name']) ?></td>
+                        <td><?php e($writer['email']) ?></td>
+                        <td><?php e(readableTime($writer['created_at'])) ?></td>
                         <td>
                             <!--Delete Trigger-->
                             <a class="button delete icon-trash_can
-                               text-dark-hover" href="/prc/writer/delete/<?php echo $writer['id'] ?>?ref=<?php echo $_SERVER['REQUEST_URI'] ?>"></a>
+                               text-dark-hover" href="/prc/writer/delete/<?php e($writer['id']) ?>?ref=<?php e($_SERVER['REQUEST_URI']) ?>"></a>
                         </td>
                     </tr>
                 <?php } ?>
@@ -43,8 +43,8 @@
         $search_query = (isset($_GET['title'])) ? '?title=' . $_GET['title'] : '';
         ?>
         <?php for ($i = 1; $i <= $writers['offsets']; $i++) { ?>
-            <a href="/manager/writers/<?php echo $i . $search_query ?>" class="button text-dark-hover">
-                <?php echo $i ?>
+            <a href="/manager/writers/<?php e($i . $search_query) ?>" class="button text-dark-hover">
+                <?php e($i) ?>
             </a>
         <?php } ?>
     </div>
@@ -56,7 +56,7 @@
 			return false;
 		}
 	});
-<?php echo getMessage(); ?>
+<?php e(toastrMessage()) ?>
 </script>
 
-<?php echo $foot_content ?>
+<?php e($foot_content) ?>

@@ -35,7 +35,7 @@ class User extends Controller
      */
     protected function create(int $type)
     {
-        parent::loggedFilter();
+        parent::userFilter(1);
         /*
          * 1.  get name, password, image_url, email, type FROM request
          * 2.  insert into user
@@ -108,7 +108,7 @@ class User extends Controller
     }
 
     /**
-     *
+     * Delete an User
      * @param int $id
      */
     public function delete(int $id)
@@ -161,6 +161,12 @@ class User extends Controller
         Flight::redirect('/');
     }
 
+    /**
+     * Change Password Procedure
+     * @param type $old_password
+     * @param type $new_password
+     * @return boolean
+     */
     private function changePassword($old_password, $new_password)
     {
         /*
@@ -186,7 +192,7 @@ class User extends Controller
     }
 
     /**
-     *
+     * Get User data
      * @param int $id
      * @return array|
      */

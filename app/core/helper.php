@@ -1,7 +1,7 @@
 <?php
 
 /**
- *
+ * Return Setting(s)
  * @param string $setting available: db, list
  * @return array
  */
@@ -27,7 +27,7 @@ function setting(string $setting)
  * @param int $limit
  * @return string
  */
-function SQLOffset(int $offset): string
+function snippetOffsetSQL(int $offset): string
 {
     $limit = setting('list_limit');
     return ' LIMIT ' . $limit . ' OFFSET ' . (($offset - 1) * $limit);
@@ -48,9 +48,15 @@ function redirect(string $url, string $message = null,
     Flight::redirect($url);
 }
 
-function getMessage()
+/**
+ * Show Result Message After a process is done via toastr.js
+ * @return string
+ */
+function toastrMessage(): string
 {
-    return (isset($_GET['m'])) ? 'toastr.' . $_GET['mt'] . '("' . $_GET['m'] . '");'
+    $message = Flight::request()->query->m;
+    $message_type = Flight::request()->query->mt;
+    return (isset($message)) ? 'toastr.' . $message_type . '("' . $message . '");'
             : '';
 }
 
@@ -64,22 +70,28 @@ function readableTime($time)
     if ($time === null) {
         return null;
     }
-    return date('d-m-Y H:i:s', strtotime($time));
-}
-
-function fixNullValue(&$value, $default)
-{
-    $value = (!$value) ? $default : $value;
+    return date('d M Y H:i', strtotime($time));
 }
 
 /**
- * Get `message` Query String From URL
- * @return string
+ * Set default value of a variable if it is empty
+ * @param type $value
+ * @param type $default
  */
-function getProcessMessage(): string
+function setDefault(&$value, $default)
 {
-    $message = Flight::request()->query->message;
-    return ($message) ?: '';
+    $value = (!isset($value) && empty($value)) ? $default : $value;
+}
+
+/**
+ * Shortcut for Echo and Subtitute the value if not set
+ * @param type $var
+ * @param type $default
+ */
+function e($var, $default = '')
+{
+    setDefault($var, $default);
+    echo $var;
 }
 
 /**
@@ -135,4 +147,18 @@ function uploadImage($file, string $basename, array $destination)
             return true;
         }
     }
+}
+
+/**
+ * Compare two date and return latest one
+ * @param type $date1
+ * @param type $date2
+ * @return type
+ */
+function latestDates($date1, $date2)
+{
+    $compare1 = ($date1) ? (new DateTime($date1)) : null;
+    $compare2 = ($date2) ? (new DateTime($date2)) : null;
+    $compare = $compare1 <=> $compare2;
+    return ($compare === -1) ? $date2 : $date1;
 }
