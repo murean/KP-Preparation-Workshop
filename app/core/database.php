@@ -50,7 +50,7 @@ class Database
             return ($last_insert) ? $last_insert_id : true;
         }
         catch (\PDOException $e) {
-            $pdo->rollback();
+            $pdo->rollBack();
             Log::write($e);
             return false;
         }
@@ -79,7 +79,7 @@ class Database
             return true;
         }
         catch (\PDOException $e) {
-            $pdo->rollback();
+            $pdo->rollBack();
             Log::write($e);
             return false;
         }

@@ -33,8 +33,9 @@ class User extends Controller
      * Create an User
      * @param int $type 1 = Manager; 2 = Writer;
      */
-    public function create(int $type)
+    protected function create(int $type)
     {
+        parent::loggedFilter();
         /*
          * 1.  get name, password, image_url, email, type FROM request
          * 2.  insert into user
@@ -45,31 +46,22 @@ class User extends Controller
 
         $encrypted_password = password_hash($data->password, PASSWORD_BCRYPT);
 
-        $queries = [];
+        $query = 'INSERT INTO user (name, password, email, type, created_at)'
+            . ' VALUES(:name, :password, :email, :type, NOW())';
 
-        $queries[0]['query'] = 'INSERT INTO user (name, password, email, type)'
-            . ' VALUES(:name, :password, :email, :type)';
-
-        $queries[0]['parameters'] = [
+        $parameters = [
             'name' => $data->name,
             'password' => $encrypted_password,
             'email' => $data->email,
             'type' => $type
         ];
 
-        $queries[1]['query'] = 'INSERT INTO privilege (user_id, code, created_at)'
-            . ' VALUES(:user_id, :code, NOW())';
+        $result = Database::TransactionQuery($query, $parameters);
 
-        $queries[1]['parameters'] = [
-            'code' => $data->code
-        ];
-
-        $queries[1]['use_last_insert_id'] = true;
-        $queries[1]['use_last_insert_id_to'] = 'user_id';
-
-        $result = Database::MultiQueryTransaction($queries);
-
-        // to upload image, use library
+        if (!$result) {
+            redirect('/manager/writer/creator', 'Gagal Mendaftarkan Penulis', 'error');
+        }
+        redirect('/manager/writer/creator', 'Berhasil Mendaftarkan Penulis', 'success');
     }
 
     /**
@@ -78,47 +70,60 @@ class User extends Controller
      */
     public function update()
     {
+        parent::loggedFilter();
         $data = $this->request->data;
         $image = $this->request->files->image;
 
         if ($image['size'] > 0) {
             $destination['original'] = $this->image_dir;
             $destination['thumbnail'] = $this->thumbnail_dir;
-            uploadImage($image, 'user-' . $data->id . '.jpg', $destination);
+            $upload_result = uploadImage($image, 'user-' . $this->session['id'] . '.jpg', $destination);
+            $this->checkAndRedirectToAccountPage($upload_result, false, 'Gagal Mengganti Foto', 'error');
         }
 
         if ($data->old_password && $data->new_password) {
-            $result = $this->changePassword();
-            if (!$result) {
-                redirect('/error');
-            }
+            $result = $this->changePassword($data->old_password, $data->new_password);
+            $this->checkAndRedirectToAccountPage($result, false, 'Password Lama Tidak Sesuai', 'error');
         }
-        redirect('/user/account');
+
+        $this->checkAndRedirectToAccountPage(true, true, 'Berhasil Mengedit AKun', 'success');
+    }
+
+    /**
+     * Check if $result value is identics with $expected_value then redirect to
+     * certain page
+     * @param type $result
+     * @param bool $expected_value
+     * @param string $message
+     * @param string $message_type
+     */
+    private function checkAndRedirectToAccountPage($result,
+        bool $expected_value, string $message, string $message_type)
+    {
+        if ($result === $expected_value) {
+            $user_type = ($this->session['type'] === 1) ? 'manager' : 'writer';
+            redirect('/' . $user_type . '/account', $message, $message_type);
+            exit();
+        }
     }
 
     /**
      *
+     * @param int $id
      */
-    public function changeProfilePicture()
+    public function delete(int $id)
     {
-        /*
-         * 1.  get uploaded file
-         * 2.  get user id
-         */
-        $profile_picture = $this->request->file->image['tmp_name'];
-        $user_id = $this->session['id'];
+        parent::userFilter(1);
 
-        $destination = $_SERVER['DOCUMENT_ROOT'] . '/img/user/profile-' . $user_id . '.jpg';
-
-        $result = move_uploaded_file($profile_picture, $destination);
-    }
-
-    public function delete()
-    {
         $query = 'UPDATE user SET deleted_at = NOW() WHERE id = :id';
-        $parameters = ['id' => $this->request->data->id];
+        $parameters = ['id' => $id];
 
         $result = Database::TransactionQuery($query, $parameters);
+
+        if (!$result) {
+            redirect($this->request->query->ref, 'Gagal Mengeluarkan Penulis', 'error');
+        }
+        redirect($this->request->query->ref, 'Berhasil Mengeluarkan Penulis', 'success');
     }
 
     /**
@@ -149,6 +154,7 @@ class User extends Controller
 
     public function logout()
     {
+        parent::loggedFilter();
         session_destroy();
 
         // redirect to home page
@@ -165,7 +171,7 @@ class User extends Controller
         $user_id = $this->session['id'];
         $query_get = 'SELECT password FROM user WHERE id = :id';
         $parameters_get = ['id' => $user_id];
-        $old_hash = Database::SelectQuery($query_get, $parameters_get)['password'];
+        $old_hash = Database::SelectQuery($query_get, $parameters_get, false)['password'];
 
         if (!password_verify($old_password, $old_hash)) {
             return false;

@@ -16,7 +16,7 @@
                 <ul class="right chevron">
                     <li><a href="/writer/dashboard">Dashboard</a></li>
                     <li><a href="/writer/articles">Artikel</a></li>
-                    <li><a href="/user/account">Akun</a></li>
+                    <li><a href="/writer/account">Akun</a></li>
                     <li><a href="/prc/logout">Logout</a></li>
                     <li>
                         <img

@@ -1,5 +1,5 @@
 <?php echo $head_content ?>
-<?php echo $banner_writer ?>
+<?php echo $$banner ?>
 <main role="main">
     <div class="section l-8 l-offset-2 m-12 s-12">
         <form action="/prc/account/update" class="customform" method="post" enctype="multipart/form-data">
@@ -14,5 +14,7 @@
         </form>
     </div>
 </main>
-
+<script>
+<?php echo getMessage() ?>
+</script>
 <?php echo $foot_content ?>

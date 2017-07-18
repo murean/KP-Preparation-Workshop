@@ -59,18 +59,12 @@
     </div>
 </main>
 <script>
-    $('#article-list').on('click', '.delete', function () {
-        let conf = confirm('Anda Yakin?');
-        if (!conf) {
-            return false;
-        }
-    });
-<?php
-// action message
-$message = getProcessMessage();
-if ($message) {
-    ?>
-        toastr.success('<?php echo $message ?>');
-<?php } ?>
+	$('#article-list').on('click', '.delete', function () {
+		let conf = confirm('Anda Yakin?');
+		if (!conf) {
+			return false;
+		}
+	});
+<?php echo getMessage() ?>
 </script>
 <?php echo $foot_content ?>

@@ -2,24 +2,39 @@
 
 namespace View;
 
+use Controller;
 use Flight;
+use Writer\Writer;
 
-class ManagerView
+class ManagerView extends Controller
 {
 
     public static function RenderDashboard()
     {
-        Flight::render('user/manager/dashboard');
+        parent::userFilter(1);
+        $statistic = new \Article\Statistic();
+        $article = [
+            'total_hit' => $statistic->getTotalHit()['hit'],
+            'total_article' => $statistic->getTotalArticle()['count'],
+            'total_writer' => \Writer\Statistic::getTotalWriter()['total'],
+            'top_writers' => \Writer\Statistic::getTopWriters(),
+            'tops' => $statistic->getTopArticle(),
+            'lasts' => $statistic->getLastArticle(),
+        ];
+        Flight::render('user/manager/dashboard', $article);
     }
 
     public static function RenderCreateWriter()
     {
-        Flight::render('user/manager/write_creator');
+        parent::userFilter(1);
+        Flight::render('user/manager/writer_creator');
     }
 
-    public static function RenderWriterList()
+    public static function RenderWriterList(int $offset)
     {
-        Flight::render('user/manager/writer_list');
+        parent::userFilter(1);
+        $writers = Writer::getList($offset);
+        Flight::render('user/manager/writer_list', ['writers' => $writers]);
     }
 
 }

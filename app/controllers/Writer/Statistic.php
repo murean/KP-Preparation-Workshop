@@ -18,17 +18,25 @@ use Database;
 class Statistic
 {
 
-    public function getTopWriters(): array
+    public static function getTopWriters(): array
     {
-        $query = 'SELECT SUM(hit) AS poin FROM article GROUP BY creator ORDER BY poin DESC' . SQLOffset(0);
-        $top_writer = Database::SelectQuery($query);
+        $query = 'SELECT a.creator, SUM(a.hit) AS poin, u.name, u.created_at'
+            . ' FROM article AS a'
+            . ' LEFT JOIN user AS u ON u.id = a.creator '
+            . ' GROUP BY a.creator ORDER BY poin DESC LIMIT 5';
+        return $top_writer = Database::SelectQuery($query);
 
-        $query = 'SELECT name, email FROM user WHERE id IN (:top_writer)';
-        $parameters = [
-            'top_writer' => implode(',', $top_writer)
-        ];
+//        $query = 'SELECT name, email FROM user WHERE id IN (:top_writer)';
+//        $parameters = [
+//            'top_writer' => implode(',', $top_writer)
+//        ];
+//        return Database::SelectQuery($query, $parameters);
+    }
 
-        return Database::SelectQuery($query, $parameters);
+    public static function getTotalWriter()
+    {
+        $query = 'SELECT COUNT(id) AS total FROM user WHERE type = 2';
+        return Database::SelectQuery($query, [], false);
     }
 
 }

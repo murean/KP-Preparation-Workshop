@@ -30,14 +30,4 @@ class Manager extends User
         parent::create($this->user_type);
     }
 
-    public function update()
-    {
-        parent::update();
-    }
-
-    public function delete()
-    {
-        parent::delete();
-    }
-
 }

@@ -2,6 +2,7 @@
 
 use Article\Article;
 use User\User;
+use Writer\Writer;
 
 ///////////
 // Views //
@@ -29,7 +30,8 @@ Flight::route('GET /writer/article/editor/@id:[0-9]+(/@status)', ['View\WriterVi
 Flight::route('GET /writer/articles(/@offset:[0-9]+(/@keyword:[a-zA-Z]+))', ['View\WriterView', 'RenderArticleList']);
 
 // Account
-Flight::route('GET /user/account', ['View\UserView', 'RenderAccount']);
+Flight::route('GET /@type:manager|writer/account', ['View\UserView', 'RenderAccount']);
+
 
 // Manager
 Flight::route('GET /manager/dashboard', ['View\ManagerView', 'RenderDashboard']);
@@ -45,12 +47,14 @@ Flight::route('GET /error', function() {
 Flight::route('POST /prc/article/create', [(new Article()), 'create']);
 Flight::route('POST /prc/article/update', [(new Article()), 'update']);
 Flight::route('GET /prc/article/delete/@id:[0-9]+', [(new Article()), 'delete']);
+//MANAGERS
+Flight::route('POST /prc/writer/create', [(new Writer()), 'create']);
+Flight::route('GET /prc/writer/delete/@id:[0-9]+', [(new Writer()), 'delete']);
 //USERS
 Flight::route('POST /prc/login', [(new User()), 'login']);
 Flight::route('GET /prc/logout', [(new User()), 'logout']);
 Flight::route('POST /prc/account/update', [(new User()), 'update']);
 
-Flight::route('/test(/@say:pew|wow)(/@talk)', function($say, $talk) {
-    echo ($say === 'pew') ? 'pew' : 'wow';
-    echo $talk;
+Flight::route('/test', function() {
+    var_dump(\Writer\Statistic::getTopWriters());
 });

@@ -29,22 +29,9 @@ class Writer extends User
     /**
      * Create Writer
      */
-    public function create()
+    public function create(int $type = null)
     {
         parent::create($this->user_type);
-    }
-
-    /**
-     *
-     */
-    public function update()
-    {
-        parent::update();
-    }
-
-    public function delete()
-    {
-        parent::delete();
     }
 
     /**
@@ -52,18 +39,24 @@ class Writer extends User
      * @param int $offset
      * @return type
      */
-    public function getList(int $offset)
+    public static function getList(int $offset)
     {
-        $query = 'SELECT id, name, email FROM user WHERE type = :type' . SQLOffset($offset);
+        $query = 'SELECT id, name, email, created_at FROM user WHERE type = :type '
+            . ' AND deleted_at IS NULL' . SQLOffset($offset);
         $parameters = [
             'type' => 2
         ];
 
-        return Database::SelectQuery($query, $parameters);
+        $query_counter = 'SELECT count(id) AS total FROM user WHERE type = :type';
+
+        $result['dataset'] = Database::SelectQuery($query, $parameters);
+        $result['offsets'] = paginationCounter(Database::SelectQuery($query_counter, $parameters, false)['total']);
+
+        return $result;
     }
 
     /**
-     * 
+     *
      * @param int $id
      * @return type
      */

@@ -14,21 +14,16 @@
             <div class="top-nav right">
                 <p class="nav-text"></p>
                 <ul class="right chevron">
-                    <li><a href="/">Home</a></li>
-                    <!--Login-->
+                    <li><a href="/manager/dashboard">Dashboard</a></li>
+                    <li><a href="/manager/writers/1">Writers</a></li>
+                    <li><a href="/manager/account">Akun</a></li>
+                    <li><a href="/prc/logout">Logout</a></li>
                     <li>
-                        <?php $session = Session::GetSessionData() ?>
-                        <?php if ($session) { ?>
-
-                            <a href="<?php echo ($session['type'] === 1) ? '/manager/dashboard'
-                                : '/writer/dashboard' ?>">
-                            <?php echo $session['name'] ?>
-                            </a>
-                        <?php } else { ?>
-                            <a href="/login">Login</a>
-<?php } ?>
+                        <img
+                            style="width:50px;"
+                            src="/img/user/thumbnail/thumb-user-<?php echo Session::GetSessionData()['id'] ?>.jpg"
+                            alt="">
                     </li>
-
                 </ul>
             </div>
         </div>

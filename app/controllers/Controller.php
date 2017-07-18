@@ -38,4 +38,15 @@ class Controller
         }
     }
 
+    /**
+     * Redirect user to homepage if session is not exist / expired
+     */
+    protected static function loggedFilter()
+    {
+        if (Session::GetSessionData() === null) {
+            redirect('/');
+            exit();
+        }
+    }
+
 }

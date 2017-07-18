@@ -33,11 +33,32 @@ function SQLOffset(int $offset): string
     return ' LIMIT ' . $limit . ' OFFSET ' . (($offset - 1) * $limit);
 }
 
-function redirect(string $url)
+/**
+ * Redirect with optional message
+ * @param string $url
+ * @param string $message
+ * @param string $message_type
+ */
+function redirect(string $url, string $message = null,
+    string $message_type = null)
 {
+    if ($message && $message_type) {
+        $url .= '?m=' . $message . '&mt=' . $message_type;
+    }
     Flight::redirect($url);
 }
 
+function getMessage()
+{
+    return (isset($_GET['m'])) ? 'toastr.' . $_GET['mt'] . '("' . $_GET['m'] . '");'
+            : '';
+}
+
+/**
+ * Reformat datetime from SQL to Indonesian
+ * @param type $time
+ * @return type
+ */
 function readableTime($time)
 {
     if ($time === null) {
@@ -52,18 +73,6 @@ function fixNullValue(&$value, $default)
 }
 
 /**
- * Upload Image to Certain Dir
- * @param type $image
- * @param type $destination
- * @return bool
- */
-//function uploadImage($image, $destination): bool
-//{
-//    // only jpg
-//    return ($image['type'] !== 'image/jpeg') ? false : move_uploaded_file($image['tmp_name'], $destination);
-//}
-
-/**
  * Get `message` Query String From URL
  * @return string
  */
@@ -73,6 +82,11 @@ function getProcessMessage(): string
     return ($message) ?: '';
 }
 
+/**
+ * Count how many page to display all records
+ * @param type $total_record
+ * @return type
+ */
 function paginationCounter($total_record)
 {
     return ceil($total_record / setting('list_limit'));
