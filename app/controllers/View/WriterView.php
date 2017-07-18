@@ -51,12 +51,11 @@ class WriterView extends Controller
     /**
      * Render Owned Article List
      */
-    public static function RenderArticleList(int $offset = null, $keyword = null)
+    public static function RenderArticleList(int $offset = null)
     {
         parent::userFilter(2);
-        fixNullValue($offset, 1);
-        fixNullValue($keyword, '');
-        $articles = Article::getList($offset, $keyword);
+        $articles = Article::getList($offset, true);
+
         Flight::render('user/writer/article_list', ['articles' => $articles]);
     }
 

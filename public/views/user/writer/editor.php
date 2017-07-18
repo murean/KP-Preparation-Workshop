@@ -1,5 +1,5 @@
-<?php echo $head_content ?>
-<?php echo $banner_writer ?>
+<?php e($head_content) ?>
+<?php e($banner_writer) ?>
 
 <main role="main">
     <div class="section m-12 s-12 l-8 l-offset-2">
@@ -29,21 +29,14 @@
 <!--Add Markdown Editor-->
 <script src="/js/simplemde/dist/simplemde.min.js"></script>
 <script>
-    var linkElement = document.createElement("link");
-    linkElement.rel = 'stylesheet';
-    linkElement.href = '/js/simplemde/dist/simplemde.min.css';
+	var linkElement = document.createElement("link");
+	linkElement.rel = 'stylesheet';
+	linkElement.href = '/js/simplemde/dist/simplemde.min.css';
 
-    document.head.appendChild(linkElement);
+	document.head.appendChild(linkElement);
 
-    let simplemde = new SimpleMDE({element: document.getElementById('content')});
+	let simplemde = new SimpleMDE({element: document.getElementById('content')});
 
-//    success to create article
-<?php if ($message == 'success') { ?>
-        toastr.success('Berhasil Mengedit Artikel');
-<?php } ?>
-//    fail to create article
-<?php if ($message == 'fail') { ?>
-        toastr.error('Gagal Mengedit Artikel');
-<?php } ?>
+<?php e(toastrMessage()) ?>
 </script>
-<?php echo $foot_content ?>
+<?php e($foot_content) ?>

@@ -34,6 +34,7 @@ class ManagerView extends Controller
     {
         parent::userFilter(1);
         $writers = Writer::getList($offset);
+
         Flight::render('user/manager/writer_list', ['writers' => $writers]);
     }
 

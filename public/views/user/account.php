@@ -1,9 +1,9 @@
-<?php echo $head_content ?>
-<?php echo $$banner ?>
+<?php e($head_content) ?>
+<?php e($$banner) ?>
 <main role="main">
     <div class="section l-8 l-offset-2 m-12 s-12">
         <form action="/prc/account/update" class="customform" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="<?php echo $data['id'] ?>">
+            <input type="hidden" name="id" value="<?php e($data['id']) ?>">
             <label>Foto Profil</label><input type="file" name="image">
             <hr>
             <label class="text-primary">Kosongkan Jika Tidak Ingin Mengubah Password</label><br>
@@ -15,6 +15,6 @@
     </div>
 </main>
 <script>
-<?php echo getMessage() ?>
+<?php e(toastrMessage()) ?>
 </script>
-<?php echo $foot_content ?>
+<?php e($foot_content) ?>

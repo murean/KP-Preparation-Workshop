@@ -21,7 +21,7 @@
                     <li>
                         <img
                             style="width:50px;"
-                            src="/img/user/thumbnail/thumb-user-<?php echo Session::GetSessionData()['id'] ?>.jpg"
+                            src="/img/user/thumbnail/thumb-user-<?php e(Session::GetSessionData()['id']) ?>.jpg"
                             alt="">
                     </li>
                 </ul>
