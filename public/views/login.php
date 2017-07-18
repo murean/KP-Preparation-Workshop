@@ -1,30 +1,46 @@
-<div class="container">
-    <style media="screen">
-        #form-container {
-            max-width: 350px;
-            margin: auto;
-            padding-top:15%;
-        }
-        #form-container form {
-            border: 1px solid #3498db;
-            border-top-width: 5px;
-            padding: 15px;
-        }
+<?php echo $head_content ?>
 
-        input[type="text"], input[type="password"] {
-            border: none;
-            border-radius: 0;
-            border-bottom: 1px solid #3498db;
-        }
-    </style>
-    <div class="row" id="form-container">
-        <div class="column" id="form-column">
-            <form action="">
-                <label><i class="fa fa-envelope"></i>&nbsp;Email</label>
-                <input type="text" placeholder="email">
-                <label><i class="fa fa-key"></i>&nbsp;Password</label><input type="password" placeholder="password">
-                <button type="submit"><i class="fa fa-unlock"></i>&nbsp;Login</button>
+
+<main role="main">
+    <section class="section background-white">
+        <div class="s-12 m-12 l-4 center">
+            <h4 class="text-size-20 margin-bottom-20 text-dark text-center">Login</h4>
+            <!--Login Failure Warning-->
+            <?php if (isset($failure_warning)) { ?>
+                <h5 class="text-center" style="color:red">
+                    <?php echo $failure_warning; ?>
+                </h5>
+            <?php } ?>
+            <!--Login Form-->
+            <form name="contactForm" class="customform" method="post" action="/prc/login">
+                <div class="s-12">
+                    <div class="margin">
+                        <div class="s-12 m-12 l-6">
+                            <!--Email Input-->
+                            <input name="email" required="required" class="required email" placeholder="Email" title="email" type="text">
+                        </div>
+                        <div class="s-12 m-12 l-6">
+                            <!--Password Input-->
+                            <input name="password" required="required" class="name" placeholder="Password" title="password" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <!--Submit Button-->
+                    <button class="s-12 l-6 submit-form button background-primary text-white" type="submit">Submit</button>
+                    <button id="button--reset-return" type="reset" class="l-6"><i class="fa fa-arrow-left"></i> Kembali</button>
+                </div>
             </form>
         </div>
-    </div>
-</div>
+    </section>
+</main>
+
+<script>
+    $(document).ready(function () {
+        $('#button--reset-return').on('click', function () {
+            window.location.replace('/');
+        });
+    });
+</script>
+
+<?php echo $foot_content ?>

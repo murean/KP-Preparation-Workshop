@@ -1,0 +1,11 @@
+{
+    "name": "vendor/k-p-preparation-workshop",
+    "description": "Description of project KP-Preparation-Workshop.",
+    "authors": [
+        {
+            "name": "rezy",
+            "email": "your@email.here"
+        }
+    ],
+    "require": {}
+}

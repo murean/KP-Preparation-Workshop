@@ -1,131 +1,56 @@
-<style media="screen">
-    /*.banner, .news-thumbnail {
-        position: relative;
-    }
+<?php echo $head_content ?>
+<?php echo $banner_main ?>
+<!-- MAIN -->
+<main role="main">
+    <!-- Content -->
+    <article>
+        <header class="section background-white">
+            <div class="line text-center">
+                <h1 class="text-dark text-s-size-30 text-m-size-40 text-l-size-headline text-thin text-line-height-1">Minimalista</h1>
 
-    .login-trigger, .news-thumbnail figcaption {
-        position: absolute;
-    }
+                <form action="#" method="get" class="customform">
+                    <input type="text" placeholder="Pencarian" class="email">
+                </form>
+            </div>
+        </header>
+        <div class="background-white full-width">
+            <?php foreach ($lists['dataset'] as $list) { ?>
+                <!--Article Thumbnail List-->
+                <div class="s-12 m-6 l-five">
+                    <a class="image-with-hover-overlay image-hover-zoom" href="/article/<?php echo $list['id'] ?>" title="Portfolio Image">
+                        <div class="image-hover-overlay background-primary">
+                            <div class="image-hover-overlay-content text-center padding-2x">
+                                <h3 class="text-white text-size-20 margin-bottom-10">
+                                    <!--title-->
+                                    <?php echo $list['title'] ?>
+                                </h3>
+                                <p class="text-white text-size-14 margin-bottom-20">
+                                    <!--summary-->
+                                    <?php echo $list['summary'] ?>
+                                </p>
+                            </div>
+                        </div>
+                        <img class="full-img" src="/img/attachment/thumbnail/thumb-img-<?php echo $list['id'] ?>.jpg" alt=""/>
+                    </a>
+                </div>
+            <?php } ?>
 
-    .container {
-        padding: 2.5%;
-    }
-    .news-thumbnail {
-        height: 350px;
-        border: 1px solid #3498db;
-        margin: 5px;
-    }
-
-    .news-thumbnail figcaption {
-        bottom: 0;
-        left:0;
-        width: 100%;
-        min-height: 55px;
-        background: rgba(41, 128, 185, .75);
-    }
-
-    #search-container form {
-        width: 95%;
-        max-width: 320px;
-        margin: auto;
-    }
-
-    .pagination-container {
-        margin-top: 15px;
-        padding: 15px;
-        text-align: center;
-        border-bottom: 1px solid #3498db;
-    }
-
-    .pagination-container a {
-        color: #3498db;
-        font-weight: bold;
-        font-size: 105%;
-        padding: 15px;
-    }
-
-    .pagination-number {
-        border: 1px solid #3498db;
-    }
-
-    .logo {
-        height:50px;
-        width:100px;
-    }
-
-    .login-trigger {
-        right: 0;
-    }*/
-</style>
-
-<!-- top header, contains logo and login button -->
-<div class="banner">
-    <img src="/image/logo.png" alt="" class="onc banner__left-item--absolute">
-    <!-- <a class="login-trigger button banner__right-item--absolute" href="#"><i class="fa fa-unlock"></i>&nbsp;Login</a> -->
-    <!-- <form class="banner__right-item--absolute banner__search-form" action="">
-        <input type="text" placeholder="Pencarian" class="banner__search-form__input">
-        <button type="reset" class="button--o-red" value=""><i class="fa fa-close"></i></button>
-    </form> -->
-</div>
-
-<div class="container">
-    <!-- second top header, contains search form -->
-    <div class="row" id="article-search-container">
-        <div class="column">
         </div>
-    </div>
-    <div class="row">
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 1</figcaption>
-        </figure>
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 2</figcaption>
-        </figure>
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 3</figcaption>
-        </figure>
-    </div>
-    <div class="row">
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 1</figcaption>
-        </figure>
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 2</figcaption>
-        </figure>
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 3</figcaption>
-        </figure>
-    </div>
-    <div class="row">
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 1</figcaption>
-        </figure>
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 2</figcaption>
-        </figure>
-        <figure class="column block--rigid grid__thumbnail">
-            <img src="/" alt="">
-            <figcaption class="grid__caption">Figure 3</figcaption>
-        </figure>
-    </div>
-    <!-- pagination -->
-    <div class="row pagination">
-        <div class="column">
-            <a href="#" class="pagination--item"><i class="fa fa-arrow-left"></i></a>
-            <a href="#" class="pagination--item">1</a>
-            <a href="#" class="pagination--item">2</a>
-            <a href="#" class="pagination--item">3</a>
-            <a href="#" class="pagination--item">4</a>
-            <a href="#" class="pagination--item">5</a>
-            <a href="#" class="pagination--item"><i class="fa fa-arrow-right"></i></a>
+        <!-- PAGINATION -->
+        <div class="background-white full-width section-small-padding">
+            <!--Pagination-->
+            <?php
+            $search_query = (isset($_GET['title'])) ? '?title=' . $_GET['title']
+                    : '';
+            ?>
+            <?php for ($i = 1; $i <= $lists['offsets']; $i++) { ?>
+                <a href="/<?php echo $i . $search_query ?>" class="button text-dark-hover">
+                    <?php echo $i ?>
+                </a>
+            <?php } ?>
         </div>
-    </div>
-</div>
+    </article>
+</main>
+
+<?php echo $foot_info ?>
+<?php echo $foot_content ?>
