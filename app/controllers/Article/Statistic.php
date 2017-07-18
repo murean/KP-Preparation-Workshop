@@ -20,7 +20,7 @@ class Statistic extends Controller
      */
     public function getTotalHit()
     {
-        $query = 'SELECT SUM(hit) AS hit FROM article';
+        $query = 'SELECT COALESCE(SUM(hit), 0) AS hit FROM article';
         return Database::SelectQuery($query, [], false);
     }
 
@@ -36,7 +36,7 @@ class Statistic extends Controller
          * 2. sum all hit from article that owned
          */
         $user = ($user_id !== null) ? $user_id : $this->session['id'];
-        $query = 'SELECT SUM(hit) AS hit FROM article WHERE creator = :creator';
+        $query = 'SELECT COALESCE(SUM(hit), 0) AS hit FROM article WHERE creator = :creator';
         $parameters = ['creator' => $user];
         return Database::SelectQuery($query, $parameters, false);
     }
