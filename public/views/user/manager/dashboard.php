@@ -1,5 +1,3 @@
-<?php e($head_content) ?>
-<?php e($banner_manager) ?>
 <style>
     .text-cue {
         color: #f1c40f;
@@ -21,74 +19,65 @@
             <!--Total Hit-->
             <div class="s-12 m-12 l-4 background-dark padding-2x">
                 <label class="text-s-size-16 full-width text-cue">Total Hit</label>
-                <label class="text-size-50 text-strong text-white"><?php e($total_hit) ?></label>
+                <label class="text-size-50 text-strong text-white">0</label>
             </div>
             <!--Total Article-->
             <div class="s-12 m-12 l-4 background-dark padding-2x">
                 <label class="text-s-size-16 full-width text-cue">Total Article</label>
-                <label class="text-size-50 text-strong text-white"><?php e($total_article) ?></label>
+                <label class="text-size-50 text-strong text-white">0</label>
             </div>
             <!--Total Writer-->
             <div class="s-12 m-12 l-4 background-dark padding-2x">
                 <label class="text-s-size-16 full-width text-cue">Total Writer</label>
-                <label class="text-size-50 text-strong text-white"><?php e($total_writer) ?></label>
+                <label class="text-size-50 text-strong text-white">0</label>
             </div>
             <!--Top Articles-->
             <div class="s-12 m-12 l-4 background-white padding-2x">
                 <label class="text-s-size-16 text-center full-width">Top Articles</label><br>
                 <ul class="text-left text-dark">
-                    <?php foreach ($tops as $top) { ?>
-                        <li class="li--wide">
-                            <a href="/article/<?php e($top['id']) ?>">
-                                <!--Title-->
-                                <?php e($top['title'] . ' ~ ' . $top['name']) ?><br>
 
-                                <!--Hit Counter-->
-                                <span class="icon-graph"></span>
-                                <label class="text-size-12"><?php e($top['hit']) ?></label>
+                    <li class="li--wide">
+                        <a href="/article/{article_id}">
+                            <!--Title-->
+                            {title} ~ {name}
 
-                                <!--Creation Time-->
-                                <span class="icon-pen"></span>
-                                <label class="text-size-12"><?php e(readableTime($top['created_at'])) ?></label>
+                            <!--Hit Counter-->
+                            <span class="icon-graph"></span>
+                            <label class="text-size-12">{hit}</label>
 
-                                <!--If the article ever edited-->
-                                <?php if ($top['updated_at'] !== null) { ?>
-                                    <span class="icon-refresh"></span>
-                                    <label class="text-size-12">
-                                        <?php e(readableTime($top['updated_at'])) ?>
-                                    </label>
-                                <?php } ?>
-                            </a>
-                        </li>
-                    <?php } ?>
+                            <!--Creation Time-->
+                            <span class="icon-pen"></span>
+                            <label class="text-size-12">{created_at}</label>
+
+                            <!--If the article ever edited-->
+                            <span class="icon-refresh"></span>
+                            <label class="text-size-12">{updated_at}</label>
+
+                        </a>
+                    </li>
                 </ul>
             </div>
             <!--New Articles-->
             <div class="s-12 m-12 l-4 background-white padding-2x">
                 <label class="text-s-size-16 text-center full-width">New Articles</label><br>
                 <ul class="text-left text-dark">
-                    <?php foreach ($lasts as $last) { ?>
-                        <li class="li--wide">
-                            <a href="/article/<?php e($last['id']) ?>">
-                                <?php e($last['title'] . ' ~ ' . $last['name']) ?><br>
-                                <!--Hit Counter-->
-                                <span class="icon-graph"></span>
-                                <label class="text-size-12"><?php e($last['hit']) ?></label>
 
-                                <!--Creation Time-->
-                                <span class="icon-pen"></span>
-                                <label class="text-size-12"><?php e(readableTime($last['created_at'])) ?></label>
+                    <li class="li--wide">
+                        <a href="/article/{article_id}">
+                            {title} ~ {name}<br>
+                            <!--Hit Counter-->
+                            <span class="icon-graph"></span>
+                            <label class="text-size-12">{hit}</label>
 
-                                <!--If the article ever edited-->
-                                <?php if ($top['updated_at'] !== null) { ?>
-                                    <span class="icon-refresh"></span>
-                                    <label class="text-size-12">
-                                        <?php e(readableTime($last['updated_at'])) ?>
-                                    </label>
-                                <?php } ?>
-                            </a>
-                        </li>
-                    <?php } ?>
+                            <!--Creation Time-->
+                            <span class="icon-pen"></span>
+                            <label class="text-size-12">{created_at}</label>
+
+                            <!--If the article ever edited-->
+                            <span class="icon-refresh"></span>
+                            <label class="text-size-12">{updated_at}</label>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -96,22 +85,18 @@
             <div class="s-12 m-12 l-4 background-white padding-2x">
                 <label class="text-s-size-16 text-center full-width">Top Writers</label><br>
                 <ul class="text-left text-dark">
-                    <?php foreach ($top_writers as $top_writer) { ?>
-                        <li class="li--wide">
+                    <li class="li--wide">
+                        {name}<br>
+                        <!--Hit Counter-->
+                        <span class="icon-graph"></span>
+                        <label class="text-size-12">{poin}</label>
 
-                            <?php e($top_writer['name']) ?><br>
-                            <!--Hit Counter-->
-                            <span class="icon-graph"></span>
-                            <label class="text-size-12"><?php e($top_writer['poin']) ?></label>
-
-                            <!--Creation Time-->
-                            <span class="icon-pen"></span>
-                            <label class="text-size-12"><?php e(readableTime($last['created_at'])) ?></label>
-                        </li>
-                    <?php } ?>
+                        <!--Creation Time-->
+                        <span class="icon-pen"></span>
+                        <label class="text-size-12">{created_at}</label>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </main>
-<?php e($foot_content) ?>

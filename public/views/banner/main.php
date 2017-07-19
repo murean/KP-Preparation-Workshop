@@ -15,20 +15,8 @@
                 <p class="nav-text"></p>
                 <ul class="right chevron">
                     <li><a href="/">Home</a></li>
-                    <!--Login-->
-                    <li>
-                        <?php $session = Session::GetSessionData() ?>
-                        <?php if ($session) { ?>
-
-                            <a href="<?php echo ($session['type'] === 1) ? '/manager/dashboard'
-                                : '/writer/dashboard' ?>">
-                            <?php echo $session['name'] ?>
-                            </a>
-                        <?php } else { ?>
-                            <a href="/login">Login</a>
-<?php } ?>
-                    </li>
-
+                    <!--Login Trigger-->
+                    <li><a href="/{manager|writer}/dashboard">{login|name}</a></li>
                 </ul>
             </div>
         </div>

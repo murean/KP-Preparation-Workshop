@@ -1,6 +1,3 @@
-<?php e($head_content) ?>
-<?php e($banner_writer) ?>
-
 <main role="main">
     <!--Search Form-->
     <div class="section-top-padding">
@@ -20,40 +17,25 @@
                 </tr>
             </thead>
             <tbody id="article-list">
-                <?php foreach ($articles['dataset'] as $article) { ?>
-                    <tr class="text-dark-hover">
-                        <td><?php e($article['id']) ?></td>
-                        <td>
-                            <?php e($article['title']) ?>
-                            <br>
-                            (
-                            <?php
-                            e(readableTime(latestDates($article['created_at'], $article['updated_at'])));
-                            ?>
-                            )</td>
-                        <td><?php e($article['summary']) ?></td>
-                        <td>
-                            <!--Edit Trigger-->
-                            <a class="button icon-pen text-dark-hover"
-                               href="/writer/article/editor/<?php e($article['id']) ?>"></a>
-                            <!--Delete Trigger-->
-                            <a class="button delete icon-trash_can text-dark-hover"
-                               href="/prc/article/delete/<?php e($article['id']) ?>?ref=<?php e($_SERVER['REQUEST_URI']) ?>"></a>
-                        </td>
-                    </tr>
-                <?php } ?>
+
+                <tr class="text-dark-hover">
+                    <td></td>
+                    <td><!--Title--><br>(<!--Last Edited-->)</td>
+                    <td></td>
+                    <td>
+                        <!--Edit Trigger-->
+                        <a class="button icon-pen text-dark-hover"
+                           href="/writer/article/editor/{id}"></a>
+                        <!--Delete Trigger-->
+                        <a class="button delete icon-trash_can text-dark-hover"
+                           href="/prc/article/delete/{id}?ref={referrer}"></a>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <br>
         <!--Pagination-->
-        <?php
-        $search_query = (isset($_GET['title'])) ? '?title=' . $_GET['title'] : '';
-        ?>
-        <?php for ($i = 1; $i <= $articles['offsets']; $i++) { ?>
-            <a href="/writer/articles/<?php e($i . $search_query) ?>" class="button text-dark-hover">
-                <?php e($i) ?>
-            </a>
-        <?php } ?>
+        <a href="/writer/articles/{page}{search_query}" class="button text-dark-hover">{page_number}</a>
     </div>
 </main>
 <script>
@@ -63,6 +45,5 @@
 			return false;
 		}
 	});
-<?php e(toastrMessage()) ?>
+
 </script>
-<?php e($foot_content) ?>

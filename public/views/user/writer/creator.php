@@ -1,6 +1,3 @@
-<?php e($head_content) ?>
-<?php e($banner_writer) ?>
-
 <main role="main">
     <div class="section m-12 s-12 l-8 l-offset-2">
         <h1>Artikel Baru</h1>
@@ -34,6 +31,5 @@
 
 	let simplemde = new SimpleMDE({element: document.getElementById('content')});
 
-<?php e(toastrMessage()) ?>
+
 </script>
-<?php e($foot_content) ?>

@@ -1,16 +1,7 @@
-<?php e($head_content) ?>
-
-
 <main role="main">
     <section class="section background-white">
         <div class="s-12 m-12 l-4 center">
             <h4 class="text-size-20 margin-bottom-20 text-dark text-center">Login</h4>
-            <!--Login Failure Warning-->
-            <?php if (isset($failure_warning)) { ?>
-                <h5 class="text-center" style="color:red">
-                    <?php echo $failure_warning; ?>
-                </h5>
-            <?php } ?>
             <!--Login Form-->
             <form name="contactForm" class="customform" method="post" action="/prc/login">
                 <div class="s-12">
@@ -36,11 +27,9 @@
 </main>
 
 <script>
-    $(document).ready(function () {
-        $('#button--reset-return').on('click', function () {
-            window.location.replace('/');
-        });
-    });
+	$(document).ready(function () {
+		$('#button--reset-return').on('click', function () {
+			window.location.replace('/');
+		});
+	});
 </script>
-
-<?php e($foot_content) ?>

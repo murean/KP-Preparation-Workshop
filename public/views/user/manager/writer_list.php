@@ -1,6 +1,3 @@
-<?php e($head_content) ?>
-<?php e($banner_manager) ?>
-
 <main role="main">
     <!--Search Form-->
     <div class="section-top-padding">
@@ -23,30 +20,26 @@
                 </tr>
             </thead>
             <tbody id="writer-list">
-                <?php foreach ($writers['dataset'] as $writer) { ?>
-                    <tr class="text-dark-hover">
-                        <td><?php e($writer['name']) ?></td>
-                        <td><?php e($writer['email']) ?></td>
-                        <td><?php e(readableTime($writer['created_at'])) ?></td>
-                        <td>
-                            <!--Delete Trigger-->
-                            <a class="button delete icon-trash_can
-                               text-dark-hover" href="/prc/writer/delete/<?php e($writer['id']) ?>?ref=<?php e($_SERVER['REQUEST_URI']) ?>"></a>
-                        </td>
-                    </tr>
-                <?php } ?>
+                <tr class="text-dark-hover">
+                    <td>{name}</td>
+                    <td>{email}</td>
+                    <td>{created_at}</td>
+                    <td>
+                        <!--Delete Trigger-->
+                        <a class="button delete icon-trash_can
+                           text-dark-hover" href="/prc/writer/delete/{writer_id}?ref={referrer}"></a>
+                    </td>
+                </tr>
             </tbody>
         </table>
         <br>
         <!--Pagination-->
-        <?php
-        $search_query = (isset($_GET['title'])) ? '?title=' . $_GET['title'] : '';
-        ?>
-        <?php for ($i = 1; $i <= $writers['offsets']; $i++) { ?>
-            <a href="/manager/writers/<?php e($i . $search_query) ?>" class="button text-dark-hover">
-                <?php e($i) ?>
-            </a>
-        <?php } ?>
+
+
+        <a href="/manager/writers/{page}{search_query}" class="button text-dark-hover">
+            {page_number}
+        </a>
+
     </div>
 </main>
 <script>
@@ -56,7 +49,4 @@
 			return false;
 		}
 	});
-<?php e(toastrMessage()) ?>
 </script>
-
-<?php e($foot_content) ?>
